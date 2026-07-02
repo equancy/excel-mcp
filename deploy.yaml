@@ -1,0 +1,43 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: excel-mcp-server
+  labels:
+    cloud.googleapis.com/location: europe-west1
+  annotations:
+    run.googleapis.com/ingress: all
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/maxScale: '1'
+        autoscaling.knative.dev/minScale: '0'
+        run.googleapis.com/client-name: cloud-console
+        run.googleapis.com/execution-environment: gen2
+        run.googleapis.com/startup-cpu-boost: 'true'
+    spec:
+      containerConcurrency: 80
+      timeoutSeconds: 300
+      containers:
+      - image: europe-west1-docker.pkg.dev/PROJECT_ID/mcp-servers/excel-mcp-server:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: MCP_BEARER_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: latest
+              name: excel-mcp-bearer-token
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 512Mi
+        startupProbe:
+          timeoutSeconds: 240
+          periodSeconds: 240
+          failureThreshold: 1
+          tcpSocket:
+            port: 8000
+  traffic:
+  - percent: 100
+    latestRevision: true
