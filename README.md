@@ -2,7 +2,6 @@
 
 A comprehensive [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server that enables AI assistants to perform Excel file operations without requiring Microsoft Excel installation.
 
-[![smithery badge](https://smithery.ai/badge/@mort-lab/excel-mcp)](https://smithery.ai/server/@mort-lab/excel-mcp)
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](tests/)
@@ -18,7 +17,7 @@ A comprehensive [Model Context Protocol](https://modelcontextprotocol.io) (MCP) 
 | **Formatting Support** | ✅ Fonts, colors, borders | ⚠️ Basic only |
 | **Formula Support** | ✅ Full Excel formulas | ⚠️ Limited |
 | **MCP Protocol** | ✅ Native support | ❌ Custom protocols |
-| **Remote Deploy** | ✅ Smithery ready | ❌ Local only |
+| **Remote Deploy** | ✅ Cloud Run ready | ❌ Local only |
 
 ## Features
 
@@ -31,20 +30,6 @@ A comprehensive [Model Context Protocol](https://modelcontextprotocol.io) (MCP) 
 - **✅ Well-tested** with 17 tests
 
 ## Installation
-
-### 🚀 Smithery (Recommended)
-
-Deploy globally and share with anyone - **no installation required**!
-
-```json
-{
-  "mcpServers": {
-    "excel": {
-      "url": "https://server.smithery.ai/@mort-lab/excel-mcp/mcp"
-    }
-  }
-}
-```
 
 ### 💻 Local Installation
 
@@ -237,7 +222,7 @@ uv run ruff format
 excel-mcp-server/
 ├── src/excel_mcp_server/
 │   ├── server.py              # FastMCP server (local)
-│   ├── server_smithery.py     # Smithery-compatible server
+│   ├── run_http.py            # HTTP entry point for Cloud Run
 │   ├── models.py              # Pydantic validation models
 │   ├── operations/            # Business logic
 │   │   ├── workbook.py
@@ -293,7 +278,86 @@ Yes! When installed locally, it works completely offline.
 Recommended: Up to 100MB or ~50,000 rows for optimal performance.
 
 **Can I use this in production?**
-Yes! The server is tested and stable. Consider using Smithery for deployment and scaling.
+Yes! The server is tested and stable. You can deploy it to Google Cloud Run for remote access.
+
+## Deploy to Google Cloud Run
+
+The server can be deployed as a remote MCP endpoint on Cloud Run using the `streamable-http` transport.
+
+### Prerequisites
+
+- [Google Cloud CLI](https://cloud.google.com/sdk/docs/install) installed and authenticated
+- A GCP project with Cloud Run and Artifact Registry APIs enabled
+- An Artifact Registry Docker repository (create one if needed):
+
+```bash
+gcloud artifacts repositories create mcp-servers \
+  --repository-format=docker \
+  --location=europe-west1
+```
+
+### Create the bearer token secret
+
+Generate a token and store it in Secret Manager:
+
+```bash
+TOKEN=$(python -c "import secrets; print(secrets.token_urlsafe(32))")
+
+gcloud secrets create excel-mcp-bearer-token \
+  --replication-policy="automatic"
+
+echo -n "$TOKEN" | gcloud secrets versions add excel-mcp-bearer-token --data-file=-
+```
+
+Grant the Cloud Run service account access to the secret:
+
+```bash
+gcloud secrets add-iam-policy-binding excel-mcp-bearer-token \
+  --member="serviceAccount:YOUR_PROJECT_NUMBER-compute@developer.gserviceaccount.com" \
+  --role="roles/secretmanager.secretAccessor"
+```
+
+### Build and push the image
+
+```bash
+gcloud builds submit \
+  --tag europe-west1-docker.pkg.dev/YOUR_PROJECT_ID/mcp-servers/excel-mcp-server \
+  --region=europe-west1
+```
+
+### Deploy the service
+
+Edit `deploy.yaml` and replace `PROJECT_ID` with your GCP project ID, then:
+
+```bash
+gcloud run services replace deploy.yaml --region europe-west1
+```
+
+To allow unauthenticated access:
+
+```bash
+gcloud run services add-iam-policy-binding excel-mcp-server \
+  --region=europe-west1 \
+  --member="allUsers" \
+  --role="roles/run.invoker"
+```
+
+### Connect to the remote server
+
+Once deployed, the MCP endpoint is available at `https://<service-url>/mcp`. Add it to your client config with the bearer token:
+
+```json
+{
+  "mcpServers": {
+    "excel": {
+      "url": "https://your-cloud-run-url/mcp",
+      "headers": {
+        "Authorization": "Bearer YOUR_TOKEN"
+      }
+    }
+  }
+}
+```
 
 ## Troubleshooting
 
@@ -370,7 +434,7 @@ This project is licensed under the MIT License.
 - Built with [FastMCP](https://github.com/jlowin/fastmcp)
 - Excel operations powered by [openpyxl](https://openpyxl.readthedocs.io/)
 - Inspired by the [Model Context Protocol](https://modelcontextprotocol.io/)
-- Deployed with [Smithery](https://smithery.ai)
+- Deployable on [Google Cloud Run](https://cloud.google.com/run)
 
 ---
 
