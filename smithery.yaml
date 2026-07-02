@@ -1,7 +1,0 @@
-runtime: "python"
-startCommand:
-  type: "http"
-  command: "python"
-  args: ["-m", "excel_mcp_server.server_smithery"]
-  env:
-    MCP_TRANSPORT: "sse"
