@@ -3,7 +3,7 @@ name = "excel-mcp-server"
 version = "0.1.0"
 description = "A Model Context Protocol server for comprehensive Excel file manipulation using openpyxl"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 authors = [
     { name = "Martin Irurozki", email = "m.irurozki@gmail.com" }
 ]
@@ -14,9 +14,8 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Office/Business",
 ]
@@ -41,6 +40,9 @@ dev = [
     "pytest-cov>=6.0.0",
     "ruff>=0.8.0",
     "pyright>=1.1.389",
+    "pre-commit>=4.6.0",
+    "mypy>=2.1.0",
+    "types-openpyxl>=3.1.5.20260518",
 ]
 
 [build-system]
@@ -61,7 +63,7 @@ addopts = ["-v", "--tb=short", "--cov=excel_mcp_server", "--cov-report=term-miss
 
 [tool.ruff]
 line-length = 100
-target-version = "py310"
+target-version = "py312"
 src = ["src"]
 
 [tool.ruff.lint]
@@ -81,8 +83,12 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
 
+[tool.mypy]
+python_version = "3.12"
+exclude = [".claude/"]
+
 [tool.pyright]
 include = ["src"]
 exclude = ["**/__pycache__", "**/.venv", "**/node_modules"]
-pythonVersion = "3.10"
+pythonVersion = "3.12"
 typeCheckingMode = "basic"
