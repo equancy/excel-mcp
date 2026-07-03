@@ -9,6 +9,7 @@ print("🔍 Verifying Excel MCP Server installation...\n")
 # Test 1: Import the package
 try:
     from excel_mcp_server import mcp
+
     print("✅ Package imported successfully")
 except ImportError as e:
     print(f"❌ Error importing package: {e}")
@@ -25,10 +26,11 @@ except AssertionError:
 # Test 3: Check operations modules
 try:
     from excel_mcp_server import operations
-    assert hasattr(operations, 'workbook')
-    assert hasattr(operations, 'cell')
-    assert hasattr(operations, 'sheet')
-    assert hasattr(operations, 'formatting')
+
+    assert hasattr(operations, "workbook")
+    assert hasattr(operations, "cell")
+    assert hasattr(operations, "sheet")
+    assert hasattr(operations, "formatting")
     print("✅ Operations modules available")
 except (ImportError, AssertionError) as e:
     print(f"❌ Error in operations modules: {e}")
@@ -37,6 +39,7 @@ except (ImportError, AssertionError) as e:
 # Test 4: Create a test workbook
 try:
     import tempfile
+
     from excel_mcp_server.operations import workbook
 
     # Create temp file path (don't create the file yet)
@@ -58,6 +61,7 @@ try:
 except Exception as e:
     print(f"❌ Error in operations: {e}")
     import traceback
+
     traceback.print_exc()
     sys.exit(1)
 
@@ -81,10 +85,7 @@ try:
     from excel_mcp_server.models import CellWriteRequest
 
     request = CellWriteRequest(
-        workbook_path="/tmp/test.xlsx",
-        sheet_name="Sheet1",
-        cell="A1",
-        value="test"
+        workbook_path="/tmp/test.xlsx", sheet_name="Sheet1", cell="A1", value="test"
     )
     assert request.cell == "A1"
 
@@ -93,9 +94,9 @@ except Exception as e:
     print(f"❌ Error in models: {e}")
     sys.exit(1)
 
-print("\n" + "="*60)
+print("\n" + "=" * 60)
 print("🎉 All verifications passed successfully!")
-print("="*60)
+print("=" * 60)
 print("\n📝 Next steps:")
 print("   1. Run: uv run python -m excel_mcp_server")
 print("   2. Configure in Claude Desktop")

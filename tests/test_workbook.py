@@ -1,7 +1,9 @@
 """Tests for workbook operations"""
 
-import pytest
 from pathlib import Path
+
+import pytest
+
 from excel_mcp_server.operations import workbook
 
 

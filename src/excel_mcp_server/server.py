@@ -1,5 +1,7 @@
 """FastMCP server for Excel operations"""
 
+from typing import Any
+
 from fastmcp import FastMCP
 
 from . import operations
@@ -21,6 +23,7 @@ mcp = FastMCP("Excel MCP Server")
 
 
 # ==================== WORKBOOK OPERATIONS ====================
+
 
 @mcp.tool()
 def create_workbook(file_path: str) -> dict:
@@ -70,6 +73,7 @@ def list_sheets(file_path: str) -> dict:
 
 
 # ==================== SHEET OPERATIONS ====================
+
 
 @mcp.tool()
 def create_sheet(workbook_path: str, sheet_name: str, index: int | None = None) -> dict:
@@ -142,6 +146,7 @@ def copy_sheet(workbook_path: str, source_sheet: str, new_name: str) -> dict:
 
 # ==================== CELL OPERATIONS ====================
 
+
 @mcp.tool()
 def write_cell(workbook_path: str, sheet_name: str, cell: str, value: Any) -> dict:
     """
@@ -156,7 +161,9 @@ def write_cell(workbook_path: str, sheet_name: str, cell: str, value: Any) -> di
     Returns:
         Dictionary with success status and the value written
     """
-    request = CellWriteRequest(workbook_path=workbook_path, sheet_name=sheet_name, cell=cell, value=value)
+    request = CellWriteRequest(
+        workbook_path=workbook_path, sheet_name=sheet_name, cell=cell, value=value
+    )
     result = operations.cell.write_cell_value(request)
     return result.model_dump()
 
@@ -180,7 +187,9 @@ def read_cell(workbook_path: str, sheet_name: str, cell: str) -> dict:
 
 
 @mcp.tool()
-def write_range(workbook_path: str, sheet_name: str, start_cell: str, data: list[list[Any]]) -> dict:
+def write_range(
+    workbook_path: str, sheet_name: str, start_cell: str, data: list[list[Any]]
+) -> dict:
     """
     Write data to a range of cells.
 
@@ -193,7 +202,9 @@ def write_range(workbook_path: str, sheet_name: str, start_cell: str, data: list
     Returns:
         Dictionary with success status and range info
     """
-    request = RangeWriteRequest(workbook_path=workbook_path, sheet_name=sheet_name, start_cell=start_cell, data=data)
+    request = RangeWriteRequest(
+        workbook_path=workbook_path, sheet_name=sheet_name, start_cell=start_cell, data=data
+    )
     result = operations.cell.write_range_values(request)
     return result.model_dump()
 
@@ -211,7 +222,9 @@ def read_range(workbook_path: str, sheet_name: str, range_ref: str) -> dict:
     Returns:
         Dictionary with the data from the range
     """
-    request = RangeReadRequest(workbook_path=workbook_path, sheet_name=sheet_name, range_ref=range_ref)
+    request = RangeReadRequest(
+        workbook_path=workbook_path, sheet_name=sheet_name, range_ref=range_ref
+    )
     result = operations.cell.read_range_values(request)
     return result.model_dump()
 
@@ -235,6 +248,7 @@ def write_formula(workbook_path: str, sheet_name: str, cell: str, formula: str) 
 
 
 # ==================== FORMATTING OPERATIONS ====================
+
 
 @mcp.tool()
 def format_font(
@@ -281,7 +295,9 @@ def format_font(
 
 
 @mcp.tool()
-def format_fill(workbook_path: str, sheet_name: str, range_ref: str, color: str, fill_type: str = "solid") -> dict:
+def format_fill(
+    workbook_path: str, sheet_name: str, range_ref: str, color: str, fill_type: str = "solid"
+) -> dict:
     """
     Apply background color to a range of cells.
 
@@ -296,7 +312,11 @@ def format_fill(workbook_path: str, sheet_name: str, range_ref: str, color: str,
         Dictionary with success status
     """
     request = FillFormatRequest(
-        workbook_path=workbook_path, sheet_name=sheet_name, range_ref=range_ref, color=color, fill_type=fill_type
+        workbook_path=workbook_path,
+        sheet_name=sheet_name,
+        range_ref=range_ref,
+        color=color,
+        fill_type=fill_type,
     )
     result = operations.formatting.format_fill(request)
     return result.model_dump()
@@ -329,7 +349,12 @@ def format_border(
         sides = ["top", "bottom", "left", "right"]
 
     request = BorderFormatRequest(
-        workbook_path=workbook_path, sheet_name=sheet_name, range_ref=range_ref, style=style, color=color, sides=sides
+        workbook_path=workbook_path,
+        sheet_name=sheet_name,
+        range_ref=range_ref,
+        style=style,
+        color=color,
+        sides=sides,
     )
     result = operations.formatting.format_border(request)
     return result.model_dump()
@@ -394,7 +419,10 @@ def format_number(workbook_path: str, sheet_name: str, range_ref: str, format_st
         Dictionary with success status
     """
     request = NumberFormatRequest(
-        workbook_path=workbook_path, sheet_name=sheet_name, range_ref=range_ref, format_string=format_string
+        workbook_path=workbook_path,
+        sheet_name=sheet_name,
+        range_ref=range_ref,
+        format_string=format_string,
     )
     result = operations.formatting.format_number(request)
     return result.model_dump()

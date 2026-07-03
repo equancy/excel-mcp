@@ -1,6 +1,5 @@
 """Sheet operations"""
 
-
 from openpyxl import load_workbook
 
 from ..models import SheetCreateRequest, SheetRenameRequest, SheetResult
@@ -51,7 +50,9 @@ def create(request: SheetCreateRequest) -> SheetResult:
         wb.close()
 
         return SheetResult(
-            success=True, message=f"Sheet '{request.sheet_name}' created successfully", sheet_name=request.sheet_name
+            success=True,
+            message=f"Sheet '{request.sheet_name}' created successfully",
+            sheet_name=request.sheet_name,
         )
 
     except Exception as e:
@@ -90,7 +91,9 @@ def delete(workbook_path: str, sheet_name: str) -> SheetResult:
         # Prevent deleting the last sheet
         if len(wb.sheetnames) == 1:
             wb.close()
-            return SheetResult(success=False, message="Cannot delete the last sheet in the workbook")
+            return SheetResult(
+                success=False, message="Cannot delete the last sheet in the workbook"
+            )
 
         # Delete sheet
         del wb[sheet_name]
@@ -99,7 +102,11 @@ def delete(workbook_path: str, sheet_name: str) -> SheetResult:
         wb.save(workbook_path)
         wb.close()
 
-        return SheetResult(success=True, message=f"Sheet '{sheet_name}' deleted successfully", sheet_name=sheet_name)
+        return SheetResult(
+            success=True,
+            message=f"Sheet '{sheet_name}' deleted successfully",
+            sheet_name=sheet_name,
+        )
 
     except Exception as e:
         return SheetResult(success=False, message=f"Failed to delete sheet: {str(e)}")
@@ -211,7 +218,9 @@ def copy_sheet(workbook_path: str, source_sheet: str, new_name: str) -> SheetRes
         wb.close()
 
         return SheetResult(
-            success=True, message=f"Sheet '{source_sheet}' copied to '{new_name}'", sheet_name=new_name
+            success=True,
+            message=f"Sheet '{source_sheet}' copied to '{new_name}'",
+            sheet_name=new_name,
         )
 
     except Exception as e:

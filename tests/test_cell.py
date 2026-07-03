@@ -1,13 +1,21 @@
 """Tests for cell operations"""
 
 import pytest
+
+from excel_mcp_server.models import (
+    CellReadRequest,
+    CellWriteRequest,
+    RangeReadRequest,
+    RangeWriteRequest,
+)
 from excel_mcp_server.operations import cell
-from excel_mcp_server.models import CellWriteRequest, CellReadRequest, RangeWriteRequest, RangeReadRequest
 
 
 def test_write_cell(sample_workbook):
     """Test writing a value to a cell"""
-    request = CellWriteRequest(workbook_path=sample_workbook, sheet_name="Sheet1", cell="D1", value="Test")
+    request = CellWriteRequest(
+        workbook_path=sample_workbook, sheet_name="Sheet1", cell="D1", value="Test"
+    )
     result = cell.write_cell_value(request)
 
     assert result.success is True
@@ -26,7 +34,9 @@ def test_read_cell(sample_workbook):
 
 def test_write_read_cell_number(sample_workbook):
     """Test writing and reading a number"""
-    write_request = CellWriteRequest(workbook_path=sample_workbook, sheet_name="Sheet1", cell="E1", value=42)
+    write_request = CellWriteRequest(
+        workbook_path=sample_workbook, sheet_name="Sheet1", cell="E1", value=42
+    )
     write_result = cell.write_cell_value(write_request)
     assert write_result.success is True
 
@@ -39,12 +49,16 @@ def test_write_read_cell_number(sample_workbook):
 def test_write_cell_invalid_reference(sample_workbook):
     """Test writing to an invalid cell reference"""
     with pytest.raises(ValueError, match="Invalid cell reference"):
-        CellWriteRequest(workbook_path=sample_workbook, sheet_name="Sheet1", cell="INVALID", value="Test")
+        CellWriteRequest(
+            workbook_path=sample_workbook, sheet_name="Sheet1", cell="INVALID", value="Test"
+        )
 
 
 def test_write_cell_sheet_not_found(sample_workbook):
     """Test writing to a non-existent sheet"""
-    request = CellWriteRequest(workbook_path=sample_workbook, sheet_name="NonExistent", cell="A1", value="Test")
+    request = CellWriteRequest(
+        workbook_path=sample_workbook, sheet_name="NonExistent", cell="A1", value="Test"
+    )
     result = cell.write_cell_value(request)
 
     assert result.success is False
@@ -54,7 +68,9 @@ def test_write_cell_sheet_not_found(sample_workbook):
 def test_write_range(sample_workbook):
     """Test writing data to a range"""
     data = [["Header1", "Header2"], ["Value1", "Value2"], ["Value3", "Value4"]]
-    request = RangeWriteRequest(workbook_path=sample_workbook, sheet_name="Sheet1", start_cell="F1", data=data)
+    request = RangeWriteRequest(
+        workbook_path=sample_workbook, sheet_name="Sheet1", start_cell="F1", data=data
+    )
     result = cell.write_range_values(request)
 
     assert result.success is True
@@ -64,7 +80,9 @@ def test_write_range(sample_workbook):
 
 def test_read_range(sample_workbook):
     """Test reading a range of cells"""
-    request = RangeReadRequest(workbook_path=sample_workbook, sheet_name="Sheet1", range_ref="A1:C1")
+    request = RangeReadRequest(
+        workbook_path=sample_workbook, sheet_name="Sheet1", range_ref="A1:C1"
+    )
     result = cell.read_range_values(request)
 
     assert result.success is True

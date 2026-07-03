@@ -35,7 +35,9 @@ def create(file_path: str) -> WorkbookResult:
         wb = Workbook()
         wb.save(file_path)
 
-        return WorkbookResult(success=True, message="Workbook created successfully", file_path=file_path)
+        return WorkbookResult(
+            success=True, message="Workbook created successfully", file_path=file_path
+        )
 
     except Exception as e:
         return WorkbookResult(success=False, message=f"Failed to create workbook: {str(e)}")
@@ -131,7 +133,9 @@ def save(file_path: str) -> WorkbookResult:
         wb.save(file_path)
         wb.close()
 
-        return WorkbookResult(success=True, message="Workbook saved successfully", file_path=file_path)
+        return WorkbookResult(
+            success=True, message="Workbook saved successfully", file_path=file_path
+        )
 
     except FileNotFoundError:
         return WorkbookResult(success=False, message=f"File not found: {file_path}")

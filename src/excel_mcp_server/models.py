@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field, field_validator
 
 # ========== Base Result Models ==========
 
+
 class OperationResult(BaseModel):
     """Base result model for all operations"""
 
@@ -43,6 +44,7 @@ class RangeResult(OperationResult):
 
 
 # ========== Request Models ==========
+
 
 class WorkbookInfo(BaseModel):
     """Workbook metadata"""
@@ -158,6 +160,7 @@ class FormulaWriteRequest(BaseModel):
 
 
 # ========== Formatting Models ==========
+
 
 class FontFormatRequest(BaseModel):
     """Request to format font"""

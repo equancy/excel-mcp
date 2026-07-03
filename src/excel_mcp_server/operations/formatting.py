@@ -51,7 +51,7 @@ def format_font(request: FontFormatRequest) -> OperationResult:
         ws = wb[request.sheet_name]
 
         # Create font object
-        font_kwargs = {}
+        font_kwargs: dict[str, Any] = {}
         if request.font_name:
             font_kwargs["name"] = request.font_name
         if request.font_size:
@@ -76,7 +76,9 @@ def format_font(request: FontFormatRequest) -> OperationResult:
         wb.save(request.workbook_path)
         wb.close()
 
-        return OperationResult(success=True, message=f"Font formatting applied to {request.range_ref}")
+        return OperationResult(
+            success=True, message=f"Font formatting applied to {request.range_ref}"
+        )
 
     except Exception as e:
         return OperationResult(success=False, message=f"Failed to apply font formatting: {str(e)}")
@@ -117,7 +119,11 @@ def format_fill(request: FillFormatRequest) -> OperationResult:
         ws = wb[request.sheet_name]
 
         # Create fill object
-        fill = PatternFill(start_color=request.color, end_color=request.color, fill_type=cast(Any, request.fill_type))
+        fill = PatternFill(
+            start_color=request.color,
+            end_color=request.color,
+            fill_type=cast(Any, request.fill_type),
+        )
 
         # Apply to range
         for row in ws[request.range_ref]:
@@ -128,7 +134,9 @@ def format_fill(request: FillFormatRequest) -> OperationResult:
         wb.save(request.workbook_path)
         wb.close()
 
-        return OperationResult(success=True, message=f"Fill formatting applied to {request.range_ref}")
+        return OperationResult(
+            success=True, message=f"Fill formatting applied to {request.range_ref}"
+        )
 
     except Exception as e:
         return OperationResult(success=False, message=f"Failed to apply fill formatting: {str(e)}")
@@ -176,7 +184,7 @@ def format_border(request: BorderFormatRequest) -> OperationResult:
         side = Side(**side_kwargs)
 
         # Create border object with specified sides
-        border_kwargs = {}
+        border_kwargs: dict[str, Any] = {}
         if "top" in request.sides:
             border_kwargs["top"] = side
         if "bottom" in request.sides:
@@ -197,10 +205,14 @@ def format_border(request: BorderFormatRequest) -> OperationResult:
         wb.save(request.workbook_path)
         wb.close()
 
-        return OperationResult(success=True, message=f"Border formatting applied to {request.range_ref}")
+        return OperationResult(
+            success=True, message=f"Border formatting applied to {request.range_ref}"
+        )
 
     except Exception as e:
-        return OperationResult(success=False, message=f"Failed to apply border formatting: {str(e)}")
+        return OperationResult(
+            success=False, message=f"Failed to apply border formatting: {str(e)}"
+        )
 
 
 def format_alignment(request: AlignmentFormatRequest) -> OperationResult:
@@ -238,7 +250,7 @@ def format_alignment(request: AlignmentFormatRequest) -> OperationResult:
         ws = wb[request.sheet_name]
 
         # Create alignment object
-        alignment_kwargs = {}
+        alignment_kwargs: dict[str, Any] = {}
         if request.horizontal:
             alignment_kwargs["horizontal"] = request.horizontal
         if request.vertical:
@@ -259,10 +271,14 @@ def format_alignment(request: AlignmentFormatRequest) -> OperationResult:
         wb.save(request.workbook_path)
         wb.close()
 
-        return OperationResult(success=True, message=f"Alignment formatting applied to {request.range_ref}")
+        return OperationResult(
+            success=True, message=f"Alignment formatting applied to {request.range_ref}"
+        )
 
     except Exception as e:
-        return OperationResult(success=False, message=f"Failed to apply alignment formatting: {str(e)}")
+        return OperationResult(
+            success=False, message=f"Failed to apply alignment formatting: {str(e)}"
+        )
 
 
 def format_number(request: NumberFormatRequest) -> OperationResult:
@@ -308,7 +324,11 @@ def format_number(request: NumberFormatRequest) -> OperationResult:
         wb.save(request.workbook_path)
         wb.close()
 
-        return OperationResult(success=True, message=f"Number formatting applied to {request.range_ref}")
+        return OperationResult(
+            success=True, message=f"Number formatting applied to {request.range_ref}"
+        )
 
     except Exception as e:
-        return OperationResult(success=False, message=f"Failed to apply number formatting: {str(e)}")
+        return OperationResult(
+            success=False, message=f"Failed to apply number formatting: {str(e)}"
+        )

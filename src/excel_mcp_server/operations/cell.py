@@ -97,7 +97,9 @@ def read_cell_value(request: CellReadRequest) -> CellResult:
 
         wb.close()
 
-        return CellResult(success=True, message=f"Value read from {request.cell}", cell=request.cell, value=value)
+        return CellResult(
+            success=True, message=f"Value read from {request.cell}", cell=request.cell, value=value
+        )
 
     except Exception as e:
         return CellResult(success=False, message=f"Failed to read cell: {str(e)}")
@@ -281,7 +283,9 @@ def write_formula(workbook_path: str, sheet_name: str, cell: str, formula: str) 
         wb.save(workbook_path)
         wb.close()
 
-        return CellResult(success=True, message=f"Formula written to {cell}", cell=cell, value=formula)
+        return CellResult(
+            success=True, message=f"Formula written to {cell}", cell=cell, value=formula
+        )
 
     except Exception as e:
         return CellResult(success=False, message=f"Failed to write formula: {str(e)}")
